@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>வடிவியல் வினாடி வினா - SJKT</title>
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+Thambi+2:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #E0F7FA;
+            --card-bg: #FFFFFF;
+            --primary: #FF9800;
+            --text-main: #37474F;
+            --btn-hover: #FFF3E0;
+            --correct: #4CAF50;
+            --wrong: #F44336;
+        }
+
+        body {
+            font-family: 'Baloo Thambi 2', cursive, sans-serif;
+            background-color: var(--bg-color);
+            background-image: radial-gradient(#B2EBF2 20%, transparent 20%), radial-gradient(#B2EBF2 20%, transparent 20%);
+            background-size: 40px 40px;
+            background-position: 0 0, 20px 20px;
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .quiz-app {
+            background-color: var(--card-bg);
+            width: 100%;
+            max-width: 700px;
+            border-radius: 30px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            padding: 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .quiz-app::before {
+            content: "📐 🔴 🟦 🔺";
+            font-size: 30px;
+            letter-spacing: 15px;
+            position: absolute;
+            top: 15px;
+            left: 0;
+            width: 100%;
+            opacity: 0.8;
+        }
+
+        h1 {
+            color: var(--primary);
+            font-size: 2.5rem;
+            margin-top: 40px;
+            margin-bottom: 5px;
+            text-shadow: 2px 2px 0px #FFE0B2;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: #78909C;
+            margin-bottom: 30px;
+        }
+
+        .progress-container {
+            width: 100%;
+            background-color: #ECEFF1;
+            border-radius: 20px;
+            height: 15px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background-color: var(--primary);
+            width: 0%;
+            transition: width 0.4s ease;
+            border-radius: 20px;
+        }
+
+        .question-text {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 30px;
+            color: #263238;
+        }
+
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .option-btn {
+            background-color: #F5F7F8;
+            border: 3px solid #CFD8DC;
+            border-radius: 20px;
+            padding: 15px 25px;
+            font-size: 1.4rem;
+            font-family: inherit;
+            color: var(--text-main);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 5px 0px #CFD8DC;
+        }
+
+        .option-btn:hover:not(:disabled) {
+            background-color: var(--btn-hover);
+            border-color: var(--primary);
+            box-shadow: 0 5px 0px var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .option-btn:disabled {
+            cursor: not-allowed;
+        }
+
+        .option-btn.correct {
+            background-color: #E8F5E9;
+            border-color: var(--correct);
+            box-shadow: 0 5px 0px var(--correct);
+            color: var(--correct);
+            font-weight: bold;
+        }
+
+        .option-btn.wrong {
+            background-color: #FFEBEE;
+            border-color: var(--wrong);
+            box-shadow: 0 5px 0px var(--wrong);
+            color: var(--wrong);
+            opacity: 0.8;
+        }
+
+        .action-btn {
+            background-color: #03A9F4;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            padding: 15px 40px;
+            font-size: 1.5rem;
+            font-family: inherit;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 30px;
+            box-shadow: 0 6px 0px #0288D1;
+            transition: all 0.2s ease;
+            display: none;
+        }
+
+        .action-btn:hover { background-color: #29B6F6; transform: translateY(-2px); }
+
+        .results-container {
+            display: none;
+        }
+
+        .score-circle {
+            width: 150px;
+            height: 150px;
+            background-color: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            font-weight: bold;
+            margin: 0 auto 20px auto;
+            border: 8px solid #FFE0B2;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        .feedback-message { font-size: 1.8rem; font-weight: 600; margin-bottom: 20px; color: #4CAF50; }
+        
+        .mistakes-list { text-align: left; background: #F5F7F8; padding: 20px; border-radius: 20px; max-height: 250px; overflow-y: auto; }
+        .mistake-item { border-bottom: 2px dashed #CFD8DC; padding: 10px 0; font-size: 1.2rem; }
+        .mistake-item:last-child { border-bottom: none; }
+        
+    </style>
+</head>
+<body>
+
+    <div class="quiz-app" id="quiz-app">
+
+        <div id="welcome-screen">
+            <h1>வடிவியல் வினாடி வினா</h1>
+            <div class="subtitle">ஆண்டு 6 SJKT கணிதம் 🎒✨</div>
+            <p style="font-size: 3rem; margin: 0;">📐🟦🔴</p>
+            <p style="font-size: 1.5rem; color: #546E7A;">வடிவங்களை பற்றிய கேள்விகளுக்கு பதிலளிக்க தயாரா?</p>
+            <button class="action-btn" style="display: inline-block;" onclick="startQuiz()">தொடங்குக! 🚀</button>
+        </div>
+
+        <div id="quiz-screen" style="display: none;">
+            <div class="progress-container">
+                <div class="progress-bar" id="progress-bar"></div>
+            </div>
+            <div class="subtitle" id="question-counter">கேள்வி 1 / 10</div>
+            
+            <div class="question-text" id="question-text"></div>
+            
+            <div class="options-container" id="options-container"></div>
+
+            <button class="action-btn" id="next-btn" onclick="nextQuestion()">அடுத்த கேள்வி ➡️</button>
+        </div>
+
+        <div id="results-screen" class="results-container">
+            <h1>முடிவுகள் 🏆</h1>
+            <div class="score-circle" id="final-score">0/10</div>
+            <div class="feedback-message" id="feedback-message">அற்புதம்!</div>
+            
+            <div class="mistakes-list" id="mistakes-list"></div>
+
+            <button class="action-btn" style="display: inline-block; background-color: var(--primary); box-shadow: 0 6px 0px #F57C00;" onclick="location.reload()">மீண்டும் விளையாடு 🔄</button>
+        </div>
+
+    </div>
+
+    <script>
+        let quizData = [
+            { q: "சமமான நான்கு பக்கங்களைக் கொண்டுள்ள வடிவம் எது?", options: ["செவ்வகம்", "சதுரம்", "நாற்கரம்"], a: "சதுரம்" },
+            { q: "அறுங்கோணத்தின் மொத்தப் பாகை எவ்வளவு?", options: ["540°", "360°", "720°"], a: "720°" },
+            { q: "செவ்வகத்தின் உட்கோணத்தின் பாகை எவ்வளவு?", options: ["180°", "90°", "60°"], a: "90°" },
+            { q: "சமமான எட்டு பக்கங்களைக் கொண்ட வடிவத்தின் பெயர் என்ன?", options: ["அறுங்கோணம்", "எழுகோணம்", "எண்கோணம்"], a: "எண்கோணம்" },
+            { q: "ஐங்கோணத்தின் மொத்தப் பாகை எவ்வளவு?", options: ["540°", "360°", "720°"], a: "540°" },
+            { q: "எழுகோணத்தின் உட்கோணத்தின் அளவு என்ன?", options: ["120°", "128°", "135°"], a: "128°" },
+            { q: "எந்த வடிவத்திற்கு சமமான ஏழு முனைகளும், ஏழு பக்கங்களும் இருக்கும்?", options: ["சமபக்க எண்கோணம்", "சமபக்க எழுகோணம்", "சமபக்க அறுங்கோணம்"], a: "சமபக்க எழுகோணம்" },
+            { q: "முக்கோணத்தின் மொத்தப் பாகை எவ்வளவு?", options: ["360°", "90°", "180°"], a: "180°" },
+            { q: "எழுகோணத்தின் மொத்தப் பாகை எவ்வளவு?", options: ["900°", "720°", "1080°"], a: "900°" },
+            { q: "எண்கோணத்தின் உட்கோணத்தின் பாகை எவ்வளவு?", options: ["135°", "120°", "144°"], a: "135°" }
+        ];
+
+        let currentQIndex = 0;
+        let score = 0;
+        let mistakes = [];
+        let audioCtx;
+        
+        function shuffleQuestions(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        function playCuteTone(type) {
+            if (!audioCtx) return;
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            
+            if(type === 'correct') {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(600, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(1200, audioCtx.currentTime + 0.1);
+                gain.gain.setValueAtTime(0.8, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+            } else {
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(300, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(150, audioCtx.currentTime + 0.2);
+                gain.gain.setValueAtTime(0.8, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+            }
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.3);
+        }
+
+        function startQuiz() {
+            // Initialize audio context for the correct/wrong dings on first user interaction
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+
+            shuffleQuestions(quizData); 
+            document.getElementById("welcome-screen").style.display = "none";
+            document.getElementById("quiz-screen").style.display = "block";
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            const nextBtn = document.getElementById("next-btn");
+            const optionsContainer = document.getElementById("options-container");
+            const qData = quizData[currentQIndex];
+
+            nextBtn.style.display = "none";
+            optionsContainer.innerHTML = "";
+            document.getElementById("question-text").innerText = qData.q;
+            document.getElementById("question-counter").innerText = `கேள்வி ${currentQIndex + 1} / ${quizData.length}`;
+            
+            const progress = (currentQIndex / quizData.length) * 100;
+            document.getElementById("progress-bar").style.width = `${progress}%`;
+
+            qData.options.forEach(opt => {
+                const btn = document.createElement("button");
+                btn.className = "option-btn";
+                btn.innerText = opt;
+                btn.onclick = () => selectAnswer(btn, opt, qData.a, qData.q);
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        function selectAnswer(btn, selected, correct, questionText) {
+            const allBtns = document.querySelectorAll(".option-btn");
+            allBtns.forEach(b => b.disabled = true);
+
+            if (selected === correct) {
+                btn.classList.add("correct");
+                btn.innerText += " ✅";
+                score++;
+                playCuteTone('correct');
+            } else {
+                btn.classList.add("wrong");
+                btn.innerText += " ❌";
+                playCuteTone('wrong');
+                mistakes.push({ q: questionText, yours: selected, real: correct });
+                
+                allBtns.forEach(b => {
+                    if (b.innerText.replace(" ✅", "").replace(" ❌", "") === correct) {
+                        b.classList.add("correct");
+                        b.innerText += " ✅";
+                    }
+                });
+            }
+
+            document.getElementById("next-btn").style.display = "inline-block";
+        }
+
+        function nextQuestion() {
+            currentQIndex++;
+            if (currentQIndex < quizData.length) {
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function showResults() {
+            document.getElementById("quiz-screen").style.display = "none";
+            document.getElementById("results-screen").style.display = "block";
+            
+            document.getElementById("final-score").innerText = `${score}/${quizData.length}`;
+            
+            const msg = document.getElementById("feedback-message");
+            if(score === 10) { msg.innerText = "🌟 அருமை! நீங்கள் முழு மதிப்பெண்கள் பெற்றுள்ளீர்கள்!"; msg.style.color = "#4CAF50"; }
+            else if(score >= 7) { msg.innerText = "👍 மிக நன்று! நல்ல முயற்சி."; msg.style.color = "#FF9800"; }
+            else { msg.innerText = "💪 இன்னும் கொஞ்சம் பயிற்சி தேவை, உங்களால் முடியும்!"; msg.style.color = "#F44336"; }
+
+            const mistakesList = document.getElementById("mistakes-list");
+            if (mistakes.length === 0) {
+                mistakesList.innerHTML = "<p style='text-align:center; font-weight:bold;'>தவறுகள் ஏதுமில்லை! 🎉</p>";
+            } else {
+                mistakesList.innerHTML = "<p style='font-weight:bold; color:#F44336; margin-bottom:10px;'>நீங்கள் செய்த தவறுகள்:</p>";
+                mistakes.forEach(m => {
+                    mistakesList.innerHTML += `
+                        <div class="mistake-item">
+                            <strong>கேள்வி:</strong> ${m.q}<br>
+                            <span style="color:#F44336;">உங்கள் பதில்: ${m.yours} ❌</span><br>
+                            <span style="color:#4CAF50;">சரியான பதில்: ${m.real} ✅</span>
+                        </div>
+                    `;
+                });
+            }
+        }
+    </script>
+</body>
+</html>
