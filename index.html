@@ -1,0 +1,220 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Student Quiz Portal | SJKT Ladang Mary</title>
+
+<style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: #f1f5f9;
+    color: #172554;
+    min-height: 100vh;
+}
+
+header {
+    background: linear-gradient(135deg, #123b8a, #1769aa);
+    color: white;
+    text-align: center;
+    padding: 48px 20px 55px;
+}
+
+.school {
+    font-size: 14px;
+    letter-spacing: 2px;
+    margin-bottom: 15px;
+    opacity: 0.9;
+}
+
+header h1 {
+    font-size: clamp(28px, 5vw, 42px);
+    margin-bottom: 12px;
+}
+
+header p {
+    font-size: 16px;
+    opacity: 0.9;
+}
+
+.container {
+    max-width: 1050px;
+    margin: -25px auto 0;
+    padding: 0 20px 45px;
+    position: relative;
+}
+
+.section-title {
+    text-align: center;
+    margin: 35px 0 25px;
+}
+
+.section-title h2 {
+    font-size: 25px;
+    color: #123b8a;
+    margin-bottom: 8px;
+}
+
+.section-title p {
+    color: #64748b;
+    font-size: 14px;
+}
+
+.games {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 22px;
+}
+
+.card {
+    background: white;
+    border-radius: 18px;
+    padding: 28px 24px;
+    box-shadow: 0 6px 20px rgba(15, 23, 42, 0.07);
+    display: flex;
+    flex-direction: column;
+    min-height: 255px;
+    border: 1px solid #e2e8f0;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 25px rgba(15, 23, 42, 0.12);
+}
+
+.emoji {
+    font-size: 43px;
+    margin-bottom: 17px;
+}
+
+.tag {
+    display: inline-block;
+    background: #e0edff;
+    color: #1746a2;
+    padding: 6px 11px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: bold;
+    margin-bottom: 13px;
+    width: fit-content;
+}
+
+.card h3 {
+    font-size: 21px;
+    margin-bottom: 11px;
+    color: #172554;
+}
+
+.card p {
+    color: #64748b;
+    font-size: 14px;
+    line-height: 1.6;
+    margin-bottom: 22px;
+    flex-grow: 1;
+}
+
+.play-btn {
+    display: block;
+    text-decoration: none;
+    text-align: center;
+    background: #1769d2;
+    color: white;
+    padding: 13px;
+    border-radius: 10px;
+    font-weight: bold;
+}
+
+.play-btn:hover {
+    background: #104b9c;
+}
+
+footer {
+    text-align: center;
+    padding: 25px 15px;
+    color: #64748b;
+    font-size: 13px;
+}
+
+@media (max-width: 600px) {
+    header {
+        padding: 38px 15px 48px;
+    }
+
+    .container {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <div class="school">SJKT LADANG MARY</div>
+    <h1>🎓 STUDENT QUIZ PORTAL</h1>
+    <p>Learn • Play • Explore • Achieve</p>
+</header>
+
+<main class="container">
+
+    <div class="section-title">
+        <h2>Choose Your Learning Adventure!</h2>
+        <p>Select a game below and start learning.</p>
+    </div>
+
+    <div class="games">
+
+        <!-- EXISTING QUIZ -->
+        <div class="card">
+            <div class="emoji">📚</div>
+            <span class="tag">STUDENT QUIZ</span>
+            <h3>Previous Student Quiz</h3>
+            <p>Access the existing collection of educational quizzes and activities.</p>
+            <a class="play-btn" href="previous-quiz.html">
+                ▶ PLAY NOW
+            </a>
+        </div>
+
+        <!-- YEAR 4 AND 5 GAME -->
+        <div class="card">
+            <div class="emoji">🧠</div>
+            <span class="tag">YEAR 4 & 5</span>
+            <h3>Mathematics Challenge</h3>
+            <p>Explore the new interactive mathematics game. Test your knowledge and challenge yourself!</p>
+            <a class="play-btn" href="year45gemini.html">
+                ▶ PLAY NOW
+            </a>
+        </div>
+
+        <!-- FUTURE GAME PLACEHOLDER -->
+        <div class="card">
+            <div class="emoji">🚀</div>
+            <span class="tag">COMING SOON</span>
+            <h3>More Games Coming Soon!</h3>
+            <p>Stay tuned for more exciting learning games and challenges.</p>
+            <a class="play-btn" href="#" onclick="return false;"
+               style="background:#94a3b8; cursor:not-allowed;">
+                COMING SOON
+            </a>
+        </div>
+
+    </div>
+
+</main>
+
+<footer>
+    <p>© 2026 SJKT Ladang Mary</p>
+    <p>Making Learning Fun Through Technology</p>
+</footer>
+
+</body>
+</html>
