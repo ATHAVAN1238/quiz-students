@@ -1,0 +1,1668 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>எடை மாற்றி பொக்கிஷ வேட்டை (Weight Conversion Treasure Hunt)</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Noto Sans Tamil & Press Start 2P -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Tamil:wght@400;600;700;800&family=Press+Start+2P&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Noto Sans Tamil', sans-serif;
+            background-color: #07090e;
+            color: #ffffff;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: manipulation;
+        }
+
+        .font-pixel {
+            font-family: 'Press Start 2P', monospace;
+        }
+
+        /* Custom Retro Pixel-Art Styling */
+        .pixel-border-gold {
+            box-shadow: 
+                0 -4px 0 0 #000,
+                0 4px 0 0 #000,
+                -4px 0 0 0 #000,
+                4px 0 0 0 #000,
+                0 0 0 4px #f59e0b,
+                inset -4px -4px 0 0 #b45309,
+                inset 4px 4px 0 0 #fef08a;
+        }
+
+        .pixel-btn {
+            position: relative;
+            transition: all 0.1s ease;
+            box-shadow: 
+                0 -4px 0 0 #000,
+                0 4px 0 0 #000,
+                -4px 0 0 0 #000,
+                4px 0 0 0 #000,
+                inset -4px -4px 0 0 rgba(0,0,0,0.4),
+                inset 4px 4px 0 0 rgba(255,255,255,0.3);
+        }
+
+        .pixel-btn:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.1);
+        }
+
+        .pixel-btn:active {
+            transform: translateY(2px);
+            box-shadow: 
+                0 -2px 0 0 #000,
+                0 2px 0 0 #000,
+                -2px 0 0 0 #000,
+                2px 0 0 0 #000,
+                inset -2px -2px 0 0 rgba(0,0,0,0.6);
+        }
+
+        /* Screen Shake Animation */
+        @keyframes shake {
+            0%, 100% { transform: translate(0, 0); }
+            20% { transform: translate(-8px, 5px); }
+            40% { transform: translate(8px, -5px); }
+            60% { transform: translate(-5px, 3px); }
+            80% { transform: translate(5px, -3px); }
+        }
+
+        .animate-shake {
+            animation: shake 0.4s ease-in-out;
+        }
+
+        /* Floating Pixel Animation */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+        }
+
+        .animate-float {
+            animation: float 2.5s ease-in-out infinite;
+        }
+
+        canvas {
+            image-rendering: pixelated;
+        }
+
+        /* Virtual D-Pad Touch Buttons */
+        .dpad-btn {
+            background-color: rgba(30, 41, 59, 0.85);
+            border: 2px solid #000;
+            box-shadow: 0 4px 0 #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #fde047;
+            user-select: none;
+            touch-action: none;
+        }
+
+        .dpad-btn:active {
+            background-color: rgba(59, 130, 246, 0.9);
+            transform: translateY(2px);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-1 sm:p-4">
+
+    <!-- MAIN GAME CONTAINER -->
+    <div id="game-container" class="w-full max-w-4xl bg-slate-900 border-4 border-slate-950 rounded-xl overflow-hidden shadow-2xl relative flex flex-col min-h-[640px]">
+        
+        <!-- ==========================================
+             SCREEN 1: WELCOME / NAME ENTRY SCREEN
+        ========================================== -->
+        <div id="screen-welcome" class="flex-1 flex flex-col items-center justify-center p-6 text-center bg-gradient-to-b from-slate-900 via-indigo-950 to-slate-950 relative">
+            
+            <!-- Audio Toggle on Welcome Screen -->
+            <button onclick="toggleAudio()" class="absolute top-4 right-4 bg-slate-800 text-yellow-400 px-3 py-1.5 rounded pixel-btn border-2 border-black flex items-center gap-1.5 text-xs z-30">
+                <span id="sound-icon-welcome">🔊</span> <span id="sound-text-welcome">ஒலி: ஆன்</span>
+            </button>
+
+            <!-- Retro Title Banner -->
+            <div class="mb-4 animate-float mt-4 sm:mt-0">
+                <div class="inline-block bg-yellow-500 text-slate-950 font-black px-6 py-2.5 rounded border-4 border-black text-xl sm:text-3xl shadow-lg transform -rotate-1">
+                    எடை மாற்றி பொக்கிஷ வேட்டை
+                </div>
+                <p class="text-yellow-300 text-sm sm:text-base font-semibold mt-2 tracking-wide">
+                    கணிதம்: ஆண்டு 4 & 5 (கிலோகிராம் ↔ கிராம்)
+                </p>
+            </div>
+
+            <!-- Pixel Decorative Icon -->
+            <div class="w-20 h-20 my-2 mx-auto relative flex items-center justify-center bg-indigo-900/60 rounded-full border-4 border-indigo-500/50 shadow-inner">
+                <svg class="w-12 h-12 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                </svg>
+            </div>
+
+            <!-- Student Form -->
+            <div class="w-full max-w-md bg-slate-800/90 p-5 sm:p-6 rounded-lg border-4 border-black shadow-xl my-3 text-left">
+                <label for="player-name-input" class="block text-yellow-300 font-bold mb-2 text-sm sm:text-base">
+                    மாணவர் பெயர் (Student Name):
+                </label>
+                <input 
+                    type="text" 
+                    id="player-name-input" 
+                    placeholder="உங்கள் பெயரை உள்ளிடவும்..." 
+                    maxlength="15"
+                    class="w-full px-4 py-3 bg-slate-900 border-2 border-yellow-500 rounded text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-yellow-400 font-bold text-base sm:text-lg mb-4"
+                />
+                
+                <button 
+                    onclick="startGame()" 
+                    class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-lg py-3 rounded pixel-btn border-4 border-black tracking-wider flex items-center justify-center gap-2">
+                    <span>⚔️</span> சாகசத்தைத் தொடங்கு
+                </button>
+            </div>
+
+            <!-- Controls & Instructions Box -->
+            <div class="max-w-md text-xs sm:text-sm text-slate-300 bg-slate-950/80 p-3.5 rounded-lg border border-slate-700 leading-relaxed text-left">
+                <p class="font-bold text-yellow-400 mb-1">🎮 எப்படி விளையாடுவது?</p>
+                <ul class="list-disc list-inside space-inside space-y-1 text-slate-300 text-xs">
+                    <li><b>நகர:</b> அம்புக்குறிகள் (Arrow Keys / WASD) அல்லது தொடுதிரை பொத்தான்கள்.</li>
+                    <li><b>குதிக்க:</b> <b>Spacebar</b> / <b>Up Arrow</b>.</li>
+                    <li><b>எடுக்க / வைக்க:</b> பெட்டியின் அருகில் சென்று <b>'E'</b> விசையை அமுக்கவும்.</li>
+                    <li>10 நிலைகளை வென்ற பின் பொக்கிஷ அறையில் தங்கக் காசுகளில் நீந்தி மகிழுங்கள்!</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- ==========================================
+             SCREEN 2: MAIN GAMEPLAY SCREEN
+        ========================================== -->
+        <div id="screen-game" class="hidden flex-1 flex flex-col bg-slate-950 relative overflow-hidden">
+            
+            <!-- CLEANED UP TOP HUD (Header Bar) -->
+            <div class="bg-slate-950 border-b-4 border-slate-800 px-3 py-2 flex flex-wrap justify-between items-center z-20 text-xs sm:text-sm gap-2">
+                
+                <!-- Left Group: Player Name & Level -->
+                <div class="flex items-center gap-2 sm:gap-3">
+                    <div class="flex items-center gap-1.5 bg-slate-900 px-2.5 py-1 rounded border-2 border-slate-700">
+                        <span class="text-yellow-400 text-xs sm:text-sm">👤</span>
+                        <span id="hud-player-name" class="font-bold text-slate-200 truncate max-w-[100px] sm:max-w-none">வீரர்</span>
+                    </div>
+
+                    <div class="bg-indigo-950 px-3 py-1 rounded border-2 border-indigo-500 font-bold text-indigo-200">
+                        <span id="hud-level">நிலை 1 / 10</span>
+                    </div>
+                </div>
+
+                <!-- Right Group: Hearts Stamina & Audio Toggle Cleanly Separated -->
+                <div class="flex items-center gap-2 sm:gap-3">
+                    <!-- Stamina Hearts -->
+                    <div class="flex items-center gap-1 bg-slate-900 px-2.5 py-1 rounded border-2 border-slate-700">
+                        <span class="text-xs text-slate-400 hidden sm:inline mr-1">உயிர்:</span>
+                        <div id="hud-hearts" class="flex gap-1 text-sm sm:text-base">
+                            <span>❤️</span><span>❤️</span><span>❤️</span>
+                        </div>
+                    </div>
+
+                    <!-- Mute Sound Toggle Button -->
+                    <button onclick="toggleAudio()" class="bg-slate-800 hover:bg-slate-700 text-yellow-400 px-2.5 py-1 rounded pixel-btn border-2 border-black flex items-center gap-1 text-xs">
+                        <span id="sound-icon-game">🔊</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- CANVAS INTERACTIVE PLAYFIELD -->
+            <div class="relative flex-1 w-full bg-slate-950 flex flex-col justify-between">
+                
+                <!-- Target Door Prompt Overlay -->
+                <div class="absolute top-2 left-1/2 transform -translate-x-1/2 z-10 w-11/12 max-w-md pointer-events-none">
+                    <div class="bg-slate-900/90 text-center px-3 py-2 rounded-lg pixel-border-gold border-2 border-black backdrop-blur-sm shadow-xl">
+                        <p class="text-[10px] sm:text-xs text-yellow-300 font-bold tracking-wider">கதவைத் திறக்கத் தேவையான எடை:</p>
+                        <h2 id="target-weight-text" class="text-base sm:text-xl font-black text-white mt-0.5">
+                            3 kg = ? g
+                        </h2>
+                    </div>
+                </div>
+
+                <!-- Main Game Canvas -->
+                <canvas id="game-canvas" class="w-full h-full object-cover block"></canvas>
+
+                <!-- Feedback Toast / Hint Banner -->
+                <div id="hint-banner" class="hidden absolute bottom-3 left-1/2 transform -translate-x-1/2 z-20 w-11/12 max-w-lg bg-red-950/95 border-2 border-red-500 rounded-lg p-3 text-center text-xs sm:text-sm text-red-100 shadow-2xl animate-bounce">
+                    <span id="hint-header" class="font-bold text-yellow-300 block mb-0.5">❌ தவறான விடை!</span>
+                    <span id="hint-text">1 kg = 1000 g என்பதை நினைவில் கொள்க!</span>
+                </div>
+
+                <!-- TOUCH SCREEN VIRTUAL CONTROLLER OVERLAY (Visible on mobile/tablet screens) -->
+                <div id="touch-controls" class="absolute bottom-3 left-3 right-3 z-30 flex justify-between items-end pointer-events-none">
+                    <!-- Left: Touch D-Pad -->
+                    <div class="grid grid-cols-3 gap-1 w-32 h-32 pointer-events-auto">
+                        <div></div>
+                        <button id="btn-up" class="dpad-btn rounded-t-lg">▲</button>
+                        <div></div>
+                        <button id="btn-left" class="dpad-btn rounded-l-lg">◄</button>
+                        <div class="bg-slate-900 border-2 border-black"></div>
+                        <button id="btn-right" class="dpad-btn rounded-r-lg">►</button>
+                        <div></div>
+                        <button id="btn-down" class="dpad-btn rounded-b-lg">▼</button>
+                        <div></div>
+                    </div>
+
+                    <!-- Right: Action Buttons Group (Jump & Interact) -->
+                    <div class="flex items-end gap-2 pointer-events-auto">
+                        <button id="btn-jump" class="w-14 h-14 rounded-full bg-indigo-600 text-yellow-300 font-extrabold text-xs border-3 border-black pixel-btn shadow-xl flex flex-col items-center justify-center active:bg-indigo-500">
+                            <span class="text-sm">🦘</span>
+                            <span class="text-[9px]">குதி</span>
+                        </button>
+                        
+                        <button id="btn-interact" class="w-20 h-20 rounded-full bg-yellow-500 text-slate-950 font-black text-xs border-4 border-black pixel-btn shadow-2xl flex flex-col items-center justify-center gap-0.5 active:bg-yellow-400">
+                            <span class="text-lg">📦</span>
+                            <span>எடு / வை</span>
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ==========================================
+             SCREEN 3: GAME OVER SCREEN
+        ========================================== -->
+        <div id="screen-gameover" class="hidden flex-1 flex flex-col items-center justify-center p-6 text-center bg-slate-950 relative">
+            <div class="text-6xl mb-4 animate-bounce">💔</div>
+            <h1 class="text-3xl sm:text-4xl font-extrabold text-red-500 mb-2 tracking-wide">
+                விளையாட்டு முடிந்தது!
+            </h1>
+            <p class="text-slate-300 text-sm sm:text-base max-w-md mb-6">
+                உங்கள் உயிர்கள் அனைத்தும் தீர்ந்துவிட்டன! மீண்டும் முயற்சி செய்து பொக்கிஷத்தைக் கைப்பற்றுங்கள்!
+            </p>
+
+            <button 
+                onclick="restartGame()" 
+                class="bg-amber-600 hover:bg-amber-500 text-white font-extrabold text-lg px-8 py-3 rounded pixel-btn border-4 border-black flex items-center gap-2">
+                <span>🔄</span> மீண்டும் முயற்சி செய்
+            </button>
+        </div>
+
+        <!-- ==========================================
+             SCREEN 4: VICTORY SCREEN
+        ========================================== -->
+        <div id="screen-victory" class="hidden flex-1 flex flex-col items-center justify-center p-4 sm:p-6 text-center bg-gradient-to-b from-slate-950 via-yellow-950/40 to-slate-950 relative overflow-hidden">
+            <!-- Confetti Canvas overlay -->
+            <canvas id="victory-canvas" class="absolute inset-0 w-full h-full pointer-events-none z-0"></canvas>
+
+            <div class="z-10 flex flex-col items-center w-full max-w-lg">
+                <!-- Top Center Trophy Graphic -->
+                <div class="text-6xl sm:text-7xl mb-2 animate-float">🏆</div>
+                
+                <!-- Top Center Congratulatory Header -->
+                <h1 id="victory-title" class="text-2xl sm:text-3xl font-black text-yellow-400 mb-1 tracking-wide drop-shadow-md">
+                    வாழ்த்துக்கள்!
+                </h1>
+                <p class="text-yellow-200 text-xs sm:text-sm font-semibold mb-4">
+                    10 நிலைகளையும் கடந்து பொக்கிஷத்தைக் கைப்பற்றிவிட்டீர்கள்!
+                </p>
+                
+                <!-- Detailed Result Stats Grid -->
+                <div class="w-full bg-slate-900/90 p-4 sm:p-5 rounded-lg pixel-border-gold border-2 border-black mb-5 shadow-2xl">
+                    <h3 class="text-yellow-400 text-xs sm:text-sm font-bold uppercase tracking-widest border-b border-slate-700 pb-2 mb-3">
+                        📊 உங்கள் விளையாட்டு முடிவுகள் (Game Results)
+                    </h3>
+
+                    <div class="grid grid-cols-3 gap-2 sm:gap-3 text-center">
+                        <!-- Stat 1: Questions Correct -->
+                        <div class="bg-slate-950 p-2.5 rounded border border-slate-800 flex flex-col items-center">
+                            <span class="text-lg sm:text-2xl mb-0.5">🎯</span>
+                            <span class="text-[10px] sm:text-xs text-slate-400 font-bold">சரியான விடை</span>
+                            <span id="stat-correct" class="text-sm sm:text-lg font-black text-emerald-400 mt-1">10 / 10</span>
+                        </div>
+
+                        <!-- Stat 2: Lives Used -->
+                        <div class="bg-slate-950 p-2.5 rounded border border-slate-800 flex flex-col items-center">
+                            <span class="text-lg sm:text-2xl mb-0.5">❤️</span>
+                            <span class="text-[10px] sm:text-xs text-slate-400 font-bold">பயன்படுத்திய உயிர்</span>
+                            <span id="stat-lives" class="text-sm sm:text-lg font-black text-red-400 mt-1">0 / 3</span>
+                        </div>
+
+                        <!-- Stat 3: Total Tries -->
+                        <div class="bg-slate-950 p-2.5 rounded border border-slate-800 flex flex-col items-center">
+                            <span class="text-lg sm:text-2xl mb-0.5">🔄</span>
+                            <span class="text-[10px] sm:text-xs text-slate-400 font-bold">மொத்த முயற்சி</span>
+                            <span id="stat-tries" class="text-sm sm:text-lg font-black text-yellow-400 mt-1">10</span>
+                        </div>
+                    </div>
+                </div>
+
+                <button 
+                    onclick="restartGame()" 
+                    class="bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-base sm:text-lg px-8 py-3 rounded pixel-btn border-4 border-black flex items-center justify-center gap-2 w-full max-w-xs shadow-xl">
+                    <span>🎮</span> மீண்டும் விளையாடு
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- GAME ENGINE LOGIC & AUDIO SYNTHESIZER -->
+    <script>
+        /* ===================================================
+           1. GAME DATA & MATH QUESTION BANK (SJKT Year 4 & 5)
+           =================================================== */
+        // Categorized Question Pools for Progressive Randomization
+        const QUESTION_BANK = {
+            // Tier 1: Basic Conversions (Levels 1-3)
+            tier1: [
+                { prompt: "3 kg = ___ g", correct: "3000 g", options: ["3000 g", "300 g", "30 g", "30000 g"], hint: "1 kg = 1000 g. எனவே 3 kg = 3 × 1000 g = 3000 g." },
+                { prompt: "5000 g = ___ kg", correct: "5 kg", options: ["5 kg", "50 kg", "0.5 kg", "500 kg"], hint: "1000 g = 1 kg. 5000-ஐ 1000-ஆல் வகுத்தால் 5 kg கிடைக்கும்." },
+                { prompt: "8 kg = ___ g", correct: "8000 g", options: ["8000 g", "800 g", "80000 g", "80 g"], hint: "1 kg = 1000 g. எனவே 8 kg = 8 × 1000 g = 8000 g." },
+                { prompt: "6000 g = ___ kg", correct: "6 kg", options: ["6 kg", "60 kg", "0.6 kg", "600 kg"], hint: "1000 g = 1 kg. 6000-ஐ 1000-ஆல் வகுத்தால் 6 kg கிடைக்கும்." }
+            ],
+            // Tier 2: Compound & Decimal Conversions (Levels 4-6)
+            tier2: [
+                { prompt: "2 kg 400 g = ___ g", correct: "2400 g", options: ["2400 g", "2040 g", "240 g", "24000 g"], hint: "2 kg = 2000 g. 2000 g + 400 g = 2400 g." },
+                { prompt: "1 kg 50 g = ___ g", correct: "1050 g", options: ["1050 g", "1500 g", "150 g", "1005 g"], hint: "1 kg = 1000 g. 1000 g + 50 g = 1050 g." },
+                { prompt: "4300 g = ___ kg ___ g", correct: "4 kg 300 g", options: ["4 kg 300 g", "43 kg 0 g", "4 kg 30 g", "43 kg 300 g"], hint: "4000 g = 4 kg. எஞ்சிய 300 g. எனவே 4 kg 300 g." },
+                { prompt: "1.5 kg = ___ g", correct: "1500 g", options: ["1500 g", "1050 g", "150 g", "15000 g"], hint: "1.5 kg = 1 kg + 0.5 kg = 1000 g + 500 g = 1500 g." },
+                { prompt: "3 kg 75 g = ___ g", correct: "3075 g", options: ["3075 g", "3750 g", "375 g", "30075 g"], hint: "3 kg = 3000 g. 3000 g + 75 g = 3075 g." }
+            ],
+            // Tier 3: Harder Fractions & Mixed Fractions (Levels 7-10)
+            tier3: [
+                { prompt: "4 ⅖ kg = ___ g", correct: "4400 g", options: ["4400 g", "4250 g", "4200 g", "4040 g"], hint: "4 kg = 4000 g. ⅖ kg = 400 g (2 × 1000 ÷ 5). 4000 g + 400 g = 4400 g." },
+                { prompt: "2 ¼ kg = ___ g", correct: "2250 g", options: ["2250 g", "2500 g", "2025 g", "225 g"], hint: "2 kg = 2000 g. ¼ kg = 250 g. 2000 g + 250 g = 2250 g." },
+                { prompt: "1 ⅘ kg = ___ g", correct: "1800 g", options: ["1800 g", "1450 g", "180 g", "1080 g"], hint: "1 kg = 1000 g. ⅘ kg = 800 g (4 × 1000 ÷ 5). 1000 g + 800 g = 1800 g." },
+                { prompt: "3 ½ kg = ___ g", correct: "3500 g", options: ["3500 g", "3050 g", "350 g", "3250 g"], hint: "3 kg = 3000 g. ½ kg = 500 g. 3000 g + 500 g = 3500 g." },
+                { prompt: "½ kg = ___ g", correct: "500 g", options: ["500 g", "250 g", "750 g", "100 g"], hint: "1 kg = 1000 g. அரை (½) kg = 1000 g ÷ 2 = 500 g." },
+                { prompt: "¾ kg = ___ g", correct: "750 g", options: ["750 g", "500 g", "250 g", "75 g"], hint: "முக்கால் (¾) kg = 3 × 250 g = 750 g." },
+                { prompt: "3.25 kg = ___ g", correct: "3250 g", options: ["3250 g", "3025 g", "325 g", "32500 g"], hint: "3.25 kg = 3 kg + 0.25 kg = 3000 g + 250 g = 3250 g." }
+            ]
+        };
+
+        let activeLevels = [];
+
+        // Helper to shuffle any array
+        function shuffleArray(arr) {
+            const copy = [...arr];
+            for (let i = copy.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [copy[i], copy[j]] = [copy[j], copy[i]];
+            }
+            return copy;
+        }
+
+        // Generate 10 randomized, progressive levels for each playthrough
+        function generatePlaythroughLevels() {
+            const t1 = shuffleArray(QUESTION_BANK.tier1).slice(0, 3);
+            const t2 = shuffleArray(QUESTION_BANK.tier2).slice(0, 3);
+            const t3 = shuffleArray(QUESTION_BANK.tier3).slice(0, 4);
+
+            activeLevels = [...t1, ...t2, ...t3].map((q, idx) => ({
+                ...q,
+                level: idx + 1
+            }));
+        }
+
+        /* ===================================================
+           2. GLOBAL GAME STATE & ENVIRONMENT PARTICLES
+           =================================================== */
+        let playerName = "மாணவர்";
+        let currentLevelIndex = 0;
+        let lives = 3;
+        let totalTries = 0;
+        let correctAnswersCount = 0;
+        let isAudioMuted = false;
+        let portalState = 'idle'; // 'idle', 'opening', 'wrong'
+        let inTreasureVault = false; // Post level 10 interactive vault state
+        let animationFrameId = null;
+
+        // Player Character Object with Jump & Vertical Physics
+        const player = {
+            x: 200,
+            y: 250,
+            z: 0,        // Jump height (vertical elevation)
+            vz: 0,       // Vertical jump velocity
+            gravity: 0.6,
+            width: 28,
+            height: 36,
+            speed: 3.8,
+            vx: 0,
+            vy: 0,
+            facing: 'right',
+            carryingItem: null,
+            isMoving: false,
+            isJumping: false,
+            walkDistance: 0,
+            blinkTimer: 0
+        };
+
+        // Chest Items, Pedestal & Environmental Particle Systems
+        let itemChests = [];
+        let portalPedestal = { x: 0, y: 0, radius: 55 };
+        let ambientParticles = [];
+        let torchFlames = [];
+        let burstParticles = [];
+        let footstepParticles = [];
+        let goldCoinParticles = []; // Coin splash particles in Treasure Vault
+
+        // Keyboard Inputs State
+        const keys = {
+            ArrowUp: false, ArrowDown: false, ArrowLeft: false, ArrowRight: false,
+            w: false, s: false, a: false, d: false,
+            e: false, KeyE: false, Space: false
+        };
+
+        /* ===================================================
+           3. WEB AUDIO SYNTHESIZER
+           =================================================== */
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        let audioCtx = null;
+
+        function initAudio() {
+            if (!audioCtx) audioCtx = new AudioCtx();
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+        }
+
+        function playSound(type) {
+            if (isAudioMuted) return;
+            try {
+                initAudio();
+                const now = audioCtx.currentTime;
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+
+                if (type === 'pickup') {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(300, now);
+                    osc.frequency.exponentialRampToValueAtTime(600, now + 0.1);
+                    gain.gain.setValueAtTime(0.2, now);
+                    gain.gain.linearRampToValueAtTime(0.01, now + 0.1);
+                    osc.start(now);
+                    osc.stop(now + 0.1);
+                } else if (type === 'coin') {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(987.77, now); // B5
+                    osc.frequency.setValueAtTime(1318.51, now + 0.06); // E6
+                    gain.gain.setValueAtTime(0.15, now);
+                    gain.gain.linearRampToValueAtTime(0.01, now + 0.12);
+                    osc.start(now);
+                    osc.stop(now + 0.12);
+                } else if (type === 'jump') {
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(150, now);
+                    osc.frequency.exponentialRampToValueAtTime(350, now + 0.12);
+                    gain.gain.setValueAtTime(0.15, now);
+                    gain.gain.linearRampToValueAtTime(0.01, now + 0.12);
+                    osc.start(now);
+                    osc.stop(now + 0.12);
+                } else if (type === 'place') {
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(500, now);
+                    osc.frequency.exponentialRampToValueAtTime(250, now + 0.12);
+                    gain.gain.setValueAtTime(0.2, now);
+                    gain.gain.linearRampToValueAtTime(0.01, now + 0.12);
+                    osc.start(now);
+                    osc.stop(now + 0.12);
+                } else if (type === 'correct') {
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(523.25, now); // C5
+                    osc.frequency.setValueAtTime(659.25, now + 0.1); // E5
+                    osc.frequency.setValueAtTime(783.99, now + 0.2); // G5
+                    osc.frequency.setValueAtTime(1046.50, now + 0.3); // C6
+                    gain.gain.setValueAtTime(0.2, now);
+                    gain.gain.linearRampToValueAtTime(0.01, now + 0.5);
+                    osc.start(now);
+                    osc.stop(now + 0.5);
+                } else if (type === 'wrong') {
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(180, now);
+                    osc.frequency.linearRampToValueAtTime(90, now + 0.3);
+                    gain.gain.setValueAtTime(0.25, now);
+                    gain.gain.linearRampToValueAtTime(0.01, now + 0.3);
+                    osc.start(now);
+                    osc.stop(now + 0.3);
+                } else if (type === 'victory') {
+                    const notes = [440, 554.37, 659.25, 880];
+                    notes.forEach((freq, idx) => {
+                        const o = audioCtx.createOscillator();
+                        const g = audioCtx.createGain();
+                        o.type = 'square';
+                        o.frequency.setValueAtTime(freq, now + idx * 0.12);
+                        g.gain.setValueAtTime(0.2, now + idx * 0.12);
+                        g.gain.linearRampToValueAtTime(0.01, now + idx * 0.12 + 0.2);
+                        o.connect(g);
+                        g.connect(audioCtx.destination);
+                        o.start(now + idx * 0.12);
+                        o.stop(now + idx * 0.12 + 0.2);
+                    });
+                }
+            } catch (e) {
+                console.log("Audio error:", e);
+            }
+        }
+
+        function toggleAudio() {
+            isAudioMuted = !isAudioMuted;
+            const iconStr = isAudioMuted ? '🔇' : '🔊';
+            document.getElementById('sound-icon-game').innerText = iconStr;
+            document.getElementById('sound-icon-welcome').innerText = iconStr;
+            document.getElementById('sound-text-welcome').innerText = isAudioMuted ? 'ஒலி: ஆஃப்' : 'ஒலி: ஆன்';
+        }
+
+        /* ===================================================
+           4. LIFECYCLE & SCREEN MANAGEMENT
+           =================================================== */
+        function showScreen(screenId) {
+            document.getElementById('screen-welcome').classList.add('hidden');
+            document.getElementById('screen-game').classList.add('hidden');
+            document.getElementById('screen-gameover').classList.add('hidden');
+            document.getElementById('screen-victory').classList.add('hidden');
+
+            document.getElementById(screenId).classList.remove('hidden');
+        }
+
+        function startGame() {
+            initAudio();
+            playSound('pickup');
+            const input = document.getElementById('player-name-input');
+            const name = input.value.trim();
+            playerName = name ? name : "மாணவர்";
+
+            document.getElementById('hud-player-name').innerText = playerName;
+            currentLevelIndex = 0;
+            lives = 3;
+            totalTries = 0;
+            correctAnswersCount = 0;
+            inTreasureVault = false;
+
+            generatePlaythroughLevels();
+            showScreen('screen-game');
+            updateHUD();
+            initCanvas();
+            loadLevel();
+        }
+
+        function restartGame() {
+            playSound('pickup');
+            currentLevelIndex = 0;
+            lives = 3;
+            totalTries = 0;
+            correctAnswersCount = 0;
+            inTreasureVault = false;
+
+            generatePlaythroughLevels();
+            showScreen('screen-game');
+            updateHUD();
+            loadLevel();
+        }
+
+        function updateHUD() {
+            if (inTreasureVault) {
+                document.getElementById('hud-level').innerText = `🏆 பொக்கிஷ அறை!`;
+            } else {
+                document.getElementById('hud-level').innerText = `நிலை ${currentLevelIndex + 1} / 10`;
+            }
+            
+            let heartsHtml = '';
+            for (let i = 0; i < 3; i++) {
+                if (i < lives) {
+                    heartsHtml += '<span class="animate-pulse">❤️</span>';
+                } else {
+                    heartsHtml += '<span class="opacity-30 filter grayscale">🖤</span>';
+                }
+            }
+            document.getElementById('hud-hearts').innerHTML = heartsHtml;
+        }
+
+        /* ===================================================
+           5. LEVEL & ITEM PLACEMENT LOGIC
+           =================================================== */
+        function loadLevel() {
+            portalState = 'idle';
+            inTreasureVault = false;
+            player.carryingItem = null;
+            player.z = 0;
+            player.vz = 0;
+            
+            const hintBanner = document.getElementById('hint-banner');
+            hintBanner.classList.add('hidden');
+            hintBanner.className = "hidden absolute bottom-3 left-1/2 transform -translate-x-1/2 z-20 w-11/12 max-w-lg bg-red-950/95 border-2 border-red-500 rounded-lg p-3 text-center text-xs sm:text-sm text-red-100 shadow-2xl animate-bounce";
+            hintBanner.onclick = null;
+
+            document.getElementById('hint-header').classList.remove('hidden');
+            document.getElementById('hint-header').innerText = "❌ தவறான விடை!";
+            
+            const q = activeLevels[currentLevelIndex];
+            document.getElementById('target-weight-text').innerText = q.prompt;
+
+            // Position chests cleanly across canvas width with scaled up spacing
+            const w = canvas.width || 800;
+            const h = canvas.height || 450;
+
+            portalPedestal = { x: w / 2, y: 130, radius: 55 };
+            player.x = w / 2;
+            player.y = h - 70;
+
+            const coords = [
+                { x: 140, y: 185 },
+                { x: w - 140, y: 185 },
+                { x: 180, y: h - 75 },
+                { x: w - 180, y: h - 75 }
+            ];
+
+            // GUARANTEED RANDOM PLACEMENT: Pick a random box index (0..3) for correct answer
+            const correctBoxIdx = Math.floor(Math.random() * 4);
+            const distractors = shuffleArray(q.options.filter(opt => opt !== q.correct));
+
+            const assignedOptions = new Array(4);
+            assignedOptions[correctBoxIdx] = q.correct;
+
+            let distractorPointer = 0;
+            for (let i = 0; i < 4; i++) {
+                if (i !== correctBoxIdx) {
+                    assignedOptions[i] = distractors[distractorPointer++];
+                }
+            }
+
+            itemChests = assignedOptions.map((opt, i) => ({
+                id: i,
+                x: coords[i].x,
+                y: coords[i].y,
+                label: opt,
+                hasItem: true,
+                radius: 48
+            }));
+
+            updateHUD();
+        }
+
+        function triggerJump() {
+            if (!player.isJumping && player.z === 0) {
+                player.vz = 9.5;
+                player.isJumping = true;
+                playSound('jump');
+
+                if (inTreasureVault) {
+                    spawnGoldSplash(player.x, player.y, 16);
+                }
+            }
+        }
+
+        function spawnSparkles(x, y, color = '#f59e0b') {
+            for (let i = 0; i < 16; i++) {
+                burstParticles.push({
+                    x: x,
+                    y: y,
+                    vx: (Math.random() - 0.5) * 6,
+                    vy: (Math.random() - 0.5) * 6 - 1,
+                    size: 3 + Math.random() * 4,
+                    color: color,
+                    life: 1.0
+                });
+            }
+        }
+
+        function spawnGoldSplash(x, y, count = 10) {
+            playSound('coin');
+            for (let i = 0; i < count; i++) {
+                goldCoinParticles.push({
+                    x: x + (Math.random() - 0.5) * 20,
+                    y: y + (Math.random() - 0.5) * 10,
+                    vx: (Math.random() - 0.5) * 7,
+                    vy: -3 - Math.random() * 6,
+                    radius: 3 + Math.random() * 3,
+                    color: Math.random() > 0.3 ? '#f59e0b' : '#fef08a',
+                    life: 1.0
+                });
+            }
+        }
+
+        function tryInteract() {
+            initAudio();
+
+            if (inTreasureVault) {
+                // In Vault: Splashing / Dancing in Gold Coins!
+                triggerJump();
+                spawnGoldSplash(player.x, player.y, 25);
+                return;
+            }
+
+            // 1. If holding item -> check if near Pedestal to place item
+            if (player.carryingItem) {
+                const distToPedestal = Math.hypot(player.x - portalPedestal.x, player.y - portalPedestal.y);
+                if (distToPedestal < portalPedestal.radius + 35) {
+                    // Place item on Pedestal
+                    const placedLabel = player.carryingItem.label;
+                    player.carryingItem = null;
+                    playSound('place');
+                    spawnSparkles(portalPedestal.x, portalPedestal.y, '#38bdf8');
+                    evaluateAnswer(placedLabel);
+                    return;
+                }
+            } 
+            
+            // 2. If NOT holding item -> check if near chest to pick up
+            if (!player.carryingItem) {
+                for (let chest of itemChests) {
+                    if (chest.hasItem) {
+                        const dist = Math.hypot(player.x - chest.x, player.y - chest.y);
+                        if (dist < chest.radius + 25) {
+                            player.carryingItem = { label: chest.label, sourceChestId: chest.id };
+                            chest.hasItem = false;
+                            playSound('pickup');
+                            spawnSparkles(chest.x, chest.y - 20, '#f59e0b');
+                            return;
+                        }
+                    }
+                }
+            }
+
+            // 3. Drop carried item back to its chest if placed elsewhere
+            if (player.carryingItem) {
+                const sourceChest = itemChests.find(c => c.id === player.carryingItem.sourceChestId);
+                if (sourceChest) sourceChest.hasItem = true;
+                spawnSparkles(player.x, player.y - 20, '#94a3b8');
+                player.carryingItem = null;
+                playSound('place');
+            }
+        }
+
+        function evaluateAnswer(selectedAnswer) {
+            const q = activeLevels[currentLevelIndex];
+            totalTries++;
+
+            if (selectedAnswer === q.correct) {
+                // CORRECT
+                correctAnswersCount++;
+                playSound('correct');
+                portalState = 'opening';
+
+                setTimeout(() => {
+                    currentLevelIndex++;
+                    if (currentLevelIndex >= activeLevels.length) {
+                        startTreasureVaultRoom();
+                    } else {
+                        loadLevel();
+                    }
+                }, 1200);
+
+            } else {
+                // WRONG
+                playSound('wrong');
+                portalState = 'wrong';
+                lives--;
+                updateHUD();
+
+                const container = document.getElementById('game-container');
+                container.classList.add('animate-shake');
+                setTimeout(() => container.classList.remove('animate-shake'), 400);
+
+                document.getElementById('hint-header').classList.remove('hidden');
+                document.getElementById('hint-header').innerText = "❌ தவறான விடை!";
+                document.getElementById('hint-text').innerText = q.hint;
+                document.getElementById('hint-banner').classList.remove('hidden');
+
+                if (lives <= 0) {
+                    setTimeout(triggerGameOver, 1000);
+                } else {
+                    setTimeout(() => { portalState = 'idle'; }, 1000);
+                }
+            }
+        }
+
+        function startTreasureVaultRoom() {
+            inTreasureVault = true;
+            document.getElementById('hint-banner').classList.add('hidden');
+            document.getElementById('target-weight-text').innerText = "🎉 பொக்கிஷ அறை! தங்கக் காசுகளில் நீந்தி மகிழுங்கள்!";
+            updateHUD();
+
+            const w = canvas.width || 800;
+            const h = canvas.height || 450;
+            player.x = w / 2;
+            player.y = h - 90;
+            player.carryingItem = null;
+
+            // Explosion of celebratory gold coins
+            spawnGoldSplash(w / 2, h / 2, 50);
+
+            // Add Victory Trophy Button Prompt after 3 seconds of swimming in gold
+            setTimeout(() => {
+                const toast = document.getElementById('hint-banner');
+                toast.className = "absolute bottom-16 left-1/2 transform -translate-x-1/2 z-30 bg-yellow-500 text-slate-950 border-4 border-black font-black rounded-lg p-3 text-center text-xs sm:text-sm shadow-2xl animate-bounce cursor-pointer pixel-btn";
+                toast.onclick = triggerVictory;
+                
+                document.getElementById('hint-header').classList.add('hidden'); // Hide "தவறான விடை!" warning
+                document.getElementById('hint-text').innerText = "🏆 வெற்றிக் கோப்பையைக் கைப்பற்ற இங்கு அமுக்கவும்!";
+                toast.classList.remove('hidden');
+            }, 3000);
+        }
+
+        function triggerGameOver() {
+            playSound('wrong');
+            showScreen('screen-gameover');
+        }
+
+        function triggerVictory() {
+            playSound('victory');
+            const livesUsed = 3 - lives;
+            
+            document.getElementById('victory-title').innerText = `வாழ்த்துக்கள் ${playerName}!`;
+            document.getElementById('stat-correct').innerText = `${correctAnswersCount} / 10`;
+            document.getElementById('stat-lives').innerText = `${livesUsed} / 3`;
+            document.getElementById('stat-tries').innerText = `${totalTries} முயற்சிகள்`;
+
+            showScreen('screen-victory');
+            startVictoryConfetti();
+        }
+
+        /* ===================================================
+           7. 2D CANVAS GAME ENGINE & ENVIRONMENT ANIMATION
+           =================================================== */
+        let canvas, ctx;
+        let portalRays = [];
+        let touchControlsInitialized = false;
+
+        function setupTouchControls() {
+            if (touchControlsInitialized) return;
+            touchControlsInitialized = true;
+
+            // Keyboard Event Listeners (WASD, Arrow Keys, Spacebar, E)
+            window.addEventListener('keydown', (e) => {
+                if (e.key in keys) keys[e.key] = true;
+                if (e.code in keys) keys[e.code] = true;
+
+                if (e.code === 'Space' || e.key === ' ') {
+                    triggerJump();
+                }
+
+                if (e.key === 'e' || e.key === 'E' || e.code === 'KeyE') {
+                    tryInteract();
+                }
+            });
+
+            window.addEventListener('keyup', (e) => {
+                if (e.key in keys) keys[e.key] = false;
+                if (e.code in keys) keys[e.code] = false;
+            });
+
+            // Helper to bind D-Pad Touch & Mouse events
+            const bindBtn = (id, keyName) => {
+                const btn = document.getElementById(id);
+                if (!btn) return;
+                
+                const startPress = (e) => {
+                    e.preventDefault();
+                    keys[keyName] = true;
+                };
+                const endPress = (e) => {
+                    e.preventDefault();
+                    keys[keyName] = false;
+                };
+
+                btn.addEventListener('touchstart', startPress, { passive: false });
+                btn.addEventListener('touchend', endPress, { passive: false });
+                btn.addEventListener('mousedown', startPress);
+                btn.addEventListener('mouseup', endPress);
+                btn.addEventListener('mouseleave', endPress);
+            };
+
+            bindBtn('btn-up', 'ArrowUp');
+            bindBtn('btn-down', 'ArrowDown');
+            bindBtn('btn-left', 'ArrowLeft');
+            bindBtn('btn-right', 'ArrowRight');
+
+            // Jump Button Listener
+            const jumpBtn = document.getElementById('btn-jump');
+            if (jumpBtn) {
+                jumpBtn.addEventListener('touchstart', (e) => {
+                    e.preventDefault();
+                    triggerJump();
+                }, { passive: false });
+                jumpBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    triggerJump();
+                });
+            }
+
+            // Interact Button listener (Touch & Click)
+            const interactBtn = document.getElementById('btn-interact');
+            if (interactBtn) {
+                interactBtn.addEventListener('touchstart', (e) => {
+                    e.preventDefault();
+                    tryInteract();
+                }, { passive: false });
+                interactBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    tryInteract();
+                });
+            }
+        }
+
+        function initCanvas() {
+            canvas = document.getElementById('game-canvas');
+            ctx = canvas.getContext('2d');
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
+            setupTouchControls();
+
+            portalRays = [];
+            for (let i = 0; i < 16; i++) {
+                portalRays.push({
+                    angle: (Math.PI * 2 / 16) * i,
+                    speed: 0.02 + Math.random() * 0.02,
+                    length: 30 + Math.random() * 40
+                });
+            }
+
+            // Initialize Floating Ambient Particles
+            ambientParticles = [];
+            for (let i = 0; i < 40; i++) {
+                ambientParticles.push({
+                    x: Math.random() * (canvas.width || 800),
+                    y: Math.random() * (canvas.height || 450),
+                    radius: 1 + Math.random() * 2.5,
+                    speedY: 0.2 + Math.random() * 0.4,
+                    speedX: (Math.random() - 0.5) * 0.3,
+                    alpha: 0.2 + Math.random() * 0.6,
+                    color: Math.random() > 0.5 ? '#f59e0b' : '#38bdf8'
+                });
+            }
+
+            if (animationFrameId) cancelAnimationFrame(animationFrameId);
+            gameLoop();
+        }
+
+        function resizeCanvas() {
+            if (!canvas || !canvas.parentElement) return;
+            canvas.width = canvas.parentElement.clientWidth;
+            canvas.height = canvas.parentElement.clientHeight;
+            
+            if (itemChests.length > 0) {
+                const w = canvas.width;
+                const h = canvas.height;
+                portalPedestal.x = w / 2;
+                portalPedestal.y = 130;
+                
+                const coords = [
+                    { x: 140, y: 185 },
+                    { x: w - 140, y: 185 },
+                    { x: 180, y: h - 75 },
+                    { x: w - 180, y: h - 75 }
+                ];
+                itemChests.forEach((c, idx) => {
+                    c.x = coords[idx].x;
+                    c.y = coords[idx].y;
+                });
+            }
+        }
+
+        function updatePlayerMovement() {
+            player.vx = 0;
+            player.vy = 0;
+
+            if (keys.ArrowLeft || keys.a || keys.KeyA) {
+                player.vx = -player.speed;
+                player.facing = 'left';
+            }
+            if (keys.ArrowRight || keys.d || keys.KeyD) {
+                player.vx = player.speed;
+                player.facing = 'right';
+            }
+            if (keys.ArrowUp || keys.w || keys.KeyW) {
+                player.vy = -player.speed;
+            }
+            if (keys.ArrowDown || keys.s || keys.KeyS) {
+                player.vy = player.speed;
+            }
+
+            player.x += player.vx;
+            player.y += player.vy;
+
+            // Player Jump Vertical Physics
+            if (player.isJumping || player.z > 0) {
+                player.z += player.vz;
+                player.vz -= player.gravity;
+
+                if (player.z <= 0) {
+                    player.z = 0;
+                    player.vz = 0;
+                    player.isJumping = false;
+
+                    if (inTreasureVault) {
+                        spawnGoldSplash(player.x, player.y, 12);
+                    }
+                }
+            }
+
+            // Boundaries
+            const padding = 25;
+            const topBoundary = 130;
+            if (player.x < padding) player.x = padding;
+            if (player.x > canvas.width - padding) player.x = canvas.width - padding;
+            if (player.y < topBoundary) player.y = topBoundary;
+            if (player.y > canvas.height - 35) player.y = canvas.height - 35;
+
+            player.isMoving = (player.vx !== 0 || player.vy !== 0);
+
+            if (player.isMoving) {
+                player.walkDistance += 0.2;
+                
+                if (inTreasureVault) {
+                    // Gold Coin Splash while walking/swimming in vault
+                    if (Math.random() < 0.45) {
+                        spawnGoldSplash(player.x, player.y, 2);
+                    }
+                } else if (Math.random() < 0.3) {
+                    // Footstep dust in dungeon
+                    footstepParticles.push({
+                        x: player.x + (Math.random() - 0.5) * 10,
+                        y: player.y + 14,
+                        radius: 2 + Math.random() * 2,
+                        alpha: 0.5,
+                        life: 1.0
+                    });
+                }
+            }
+        }
+
+        function gameLoop() {
+            if (!ctx || document.getElementById('screen-game').classList.contains('hidden')) {
+                animationFrameId = requestAnimationFrame(gameLoop);
+                return;
+            }
+
+            updatePlayerMovement();
+            renderScene();
+            animationFrameId = requestAnimationFrame(gameLoop);
+        }
+
+        // Draw Environmental Details: Moss, Cobwebs, Wall Cracks, Stone Debris
+        function renderDungeonDetails(w, h, time) {
+            ctx.save();
+
+            // 1. Cobwebs in top corners
+            ctx.strokeStyle = 'rgba(241, 245, 249, 0.25)';
+            ctx.lineWidth = 1;
+            
+            // Top Left Web
+            ctx.beginPath();
+            ctx.moveTo(0, 0); ctx.lineTo(45, 0); ctx.lineTo(0, 45); ctx.closePath();
+            ctx.moveTo(0, 0); ctx.lineTo(30, 30);
+            ctx.stroke();
+
+            // Top Right Web
+            ctx.beginPath();
+            ctx.moveTo(w, 0); ctx.lineTo(w - 45, 0); ctx.lineTo(w, 45); ctx.closePath();
+            ctx.moveTo(w, 0); ctx.lineTo(w - 30, 30);
+            ctx.stroke();
+
+            // 2. Brick Wall Cracks
+            ctx.strokeStyle = 'rgba(2, 6, 23, 0.8)';
+            ctx.lineWidth = 1.5;
+            
+            // Crack 1
+            ctx.beginPath();
+            ctx.moveTo(w * 0.22, 35);
+            ctx.lineTo(w * 0.22 + 8, 45);
+            ctx.lineTo(w * 0.22 + 4, 58);
+            ctx.stroke();
+
+            // Crack 2
+            ctx.beginPath();
+            ctx.moveTo(w * 0.76, 20);
+            ctx.lineTo(w * 0.76 - 6, 32);
+            ctx.lineTo(w * 0.76 + 2, 44);
+            ctx.stroke();
+
+            // 3. Moss Patches on Walls & Floor Base
+            const mossColor = '#15803d';
+            const lightMoss = '#22c55e';
+            
+            // Wall Base Moss Patches
+            const mossSpots = [
+                { x: 30, y: 105, w: 35, h: 8 },
+                { x: w - 85, y: 105, w: 40, h: 8 },
+                { x: w * 0.38, y: 106, w: 25, h: 6 },
+                { x: w * 0.62, y: 106, w: 30, h: 7 }
+            ];
+            mossSpots.forEach(m => {
+                ctx.fillStyle = mossColor;
+                ctx.fillRect(m.x, m.y, m.w, m.h);
+                ctx.fillStyle = lightMoss;
+                ctx.fillRect(m.x + 3, m.y + 1, m.w - 6, 3);
+            });
+
+            // 4. Stone Debris & Pebbles on Floor
+            const pebbles = [
+                { x: 80, y: 160, r: 4 },
+                { x: 92, y: 164, r: 2 },
+                { x: w - 90, y: 175, r: 5 },
+                { x: w - 102, y: 170, r: 3 },
+                { x: 210, y: h - 45, r: 4 },
+                { x: w - 230, y: h - 50, r: 5 }
+            ];
+            pebbles.forEach(p => {
+                ctx.fillStyle = '#334155';
+                ctx.fillRect(p.x, p.y, p.r * 2, p.r * 1.5);
+                ctx.fillStyle = '#0f172a';
+                ctx.fillRect(p.x, p.y + p.r * 1.5, p.r * 2, 2);
+            });
+
+            ctx.restore();
+        }
+
+        function renderScene() {
+            const w = canvas.width;
+            const h = canvas.height;
+            const time = Date.now() * 0.003;
+
+            // 1. Dungeon Floor & Wall Background
+            ctx.fillStyle = '#0b0f19';
+            ctx.fillRect(0, 0, w, h);
+
+            // Brick Wall Grid Texture
+            ctx.strokeStyle = '#1e293b';
+            ctx.lineWidth = 1.5;
+            const brickW = 44;
+            const brickH = 22;
+            for (let y = 0; y < 110; y += brickH) {
+                const offsetX = (Math.floor(y / brickH) % 2) * (brickW / 2);
+                for (let x = -brickW; x < w + brickW; x += brickW) {
+                    ctx.strokeRect(x + offsetX, y, brickW, brickH);
+                }
+            }
+
+            // Pulsing Magical Ancient Runes on Back Wall
+            const runes = ["kg", "=", "1000", "g"];
+            const runePositions = [w * 0.18, w * 0.35, w * 0.65, w * 0.82];
+            ctx.font = 'bold 12px "Press Start 2P", monospace';
+            ctx.textAlign = 'center';
+            runes.forEach((rune, idx) => {
+                const pulse = Math.sin(time * 2 + idx) * 0.4 + 0.6;
+                ctx.fillStyle = inTreasureVault ? `rgba(250, 204, 21, ${pulse * 0.5})` : `rgba(56, 189, 248, ${pulse * 0.25})`;
+                ctx.fillText(rune, runePositions[idx], 55);
+            });
+
+            // Dungeon Floor Tiles Area
+            ctx.fillStyle = '#111827';
+            ctx.fillRect(0, 110, w, h - 110);
+            
+            // Floor Grid Lines
+            ctx.strokeStyle = '#1f293d';
+            ctx.lineWidth = 1;
+            for (let fx = 0; fx < w; fx += 50) {
+                ctx.beginPath();
+                ctx.moveTo(fx, 110);
+                ctx.lineTo(fx, h);
+                ctx.stroke();
+            }
+            for (let fy = 110; fy < h; fy += 50) {
+                ctx.beginPath();
+                ctx.moveTo(0, fy);
+                ctx.lineTo(w, fy);
+                ctx.stroke();
+            }
+
+            // Wall Top Molding Edge
+            ctx.fillStyle = '#334155';
+            ctx.fillRect(0, 106, w, 5);
+
+            // Render Cobwebs, Moss, Wall Cracks & Rubble Debris
+            renderDungeonDetails(w, h, time);
+
+            // 2. Wall Torches & Dynamic Warm Radial Lighting
+            const torchPositions = [50, w - 50];
+            torchPositions.forEach((tx) => {
+                const gradient = ctx.createRadialGradient(tx, 60, 5, tx, 60, 95);
+                gradient.addColorStop(0, 'rgba(245, 158, 11, 0.4)');
+                gradient.addColorStop(0.5, 'rgba(217, 119, 6, 0.18)');
+                gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
+                ctx.fillStyle = gradient;
+                ctx.beginPath();
+                ctx.arc(tx, 60, 95, 0, Math.PI * 2);
+                ctx.fill();
+
+                ctx.fillStyle = '#475569';
+                ctx.fillRect(tx - 3, 62, 6, 14);
+                ctx.fillStyle = '#78350f';
+                ctx.fillRect(tx - 5, 55, 10, 8);
+
+                if (Math.random() < 0.6) {
+                    torchFlames.push({
+                        x: tx + (Math.random() - 0.5) * 6,
+                        y: 52,
+                        vx: (Math.random() - 0.5) * 0.6,
+                        vy: -0.8 - Math.random() * 0.8,
+                        size: 3 + Math.random() * 3,
+                        life: 1.0,
+                        color: Math.random() > 0.3 ? '#f59e0b' : '#ef4444'
+                    });
+                }
+            });
+
+            // Update & Render Torch Flames
+            for (let i = torchFlames.length - 1; i >= 0; i--) {
+                const tf = torchFlames[i];
+                tf.x += tf.vx;
+                tf.y += tf.vy;
+                tf.life -= 0.05;
+                tf.size *= 0.94;
+
+                if (tf.life <= 0 || tf.size < 0.5) {
+                    torchFlames.splice(i, 1);
+                    continue;
+                }
+
+                ctx.fillStyle = tf.color;
+                ctx.globalAlpha = tf.life;
+                ctx.fillRect(tf.x - tf.size/2, tf.y - tf.size/2, tf.size, tf.size);
+                ctx.globalAlpha = 1.0;
+            }
+
+            // 3. Magical Center Door & Pedestal
+            const portalX = portalPedestal.x;
+            const portalY = 90;
+            const portalW = 76;
+            const portalH = 96;
+
+            ctx.fillStyle = '#334155';
+            ctx.fillRect(portalX - portalW/2 - 10, portalY - portalH/2 - 10, portalW + 20, portalH + 20);
+            ctx.fillStyle = '#020617';
+            ctx.fillRect(portalX - portalW/2, portalY - portalH/2, portalW, portalH);
+
+            let glowColor = inTreasureVault ? '#eab308' : '#3b82f6';
+            if (portalState === 'opening') glowColor = '#10b981';
+            if (portalState === 'wrong') glowColor = '#ef4444';
+
+            ctx.save();
+            ctx.beginPath();
+            ctx.rect(portalX - portalW/2, portalY - portalH/2, portalW, portalH);
+            ctx.clip();
+
+            portalRays.forEach((ray) => {
+                ray.angle += ray.speed;
+                const rx = portalX + Math.cos(ray.angle + time) * ray.length;
+                const ry = portalY + Math.sin(ray.angle + time) * ray.length;
+                ctx.strokeStyle = glowColor;
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.moveTo(portalX, portalY);
+                ctx.lineTo(rx, ry);
+                ctx.stroke();
+            });
+
+            ctx.fillStyle = glowColor;
+            ctx.beginPath();
+            ctx.arc(portalX, portalY, 16 + Math.sin(time * 4) * 3, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+
+            // Pedestal Stand in Front of Door
+            ctx.fillStyle = '#475569';
+            ctx.fillRect(portalX - 28, portalPedestal.y - 12, 56, 22);
+            ctx.fillStyle = '#020617';
+            ctx.strokeRect(portalX - 28, portalPedestal.y - 12, 56, 22);
+
+            ctx.strokeStyle = '#38bdf8';
+            ctx.lineWidth = 1.5;
+            ctx.beginPath();
+            ctx.ellipse(portalX, portalPedestal.y - 4, 18, 6, 0, 0, Math.PI * 2);
+            ctx.stroke();
+
+            ctx.fillStyle = '#fbbf24';
+            ctx.font = 'bold 10px "Press Start 2P", monospace';
+            ctx.textAlign = 'center';
+            ctx.fillText("பீடம்", portalX, portalPedestal.y + 4);
+
+            // =========================================================
+            // TREASURE VAULT SPECIAL ENVIRONMENT (IF IN VAULT MODE)
+            // =========================================================
+            if (inTreasureVault) {
+                // Giant carpet of gold coins covering room floor
+                for (let gx = 30; gx < w - 30; gx += 16) {
+                    for (let gy = 140; gy < h - 20; gy += 14) {
+                        const coinWave = Math.sin(time * 4 + gx * 0.1 + gy * 0.1) * 2;
+                        ctx.fillStyle = (gx + gy) % 3 === 0 ? '#f59e0b' : ((gx + gy) % 2 === 0 ? '#eab308' : '#fef08a');
+                        ctx.beginPath();
+                        ctx.arc(gx + (gy % 4), gy + coinWave, 6, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.strokeStyle = '#b45309';
+                        ctx.lineWidth = 1;
+                        ctx.stroke();
+                    }
+                }
+
+                // Giant Golden Crown / Trophy in Center
+                ctx.fillStyle = '#f59e0b';
+                ctx.beginPath();
+                ctx.arc(w / 2, h / 2 - 20, 24, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.fillStyle = '#fde047';
+                ctx.fillText("🏆", w / 2, h / 2 - 14);
+            }
+
+            // 4. Draw 4 LARGER Treasure Chests with CRISP, MUCH LARGER TEXT LABELS
+            if (!inTreasureVault) {
+                itemChests.forEach((chest) => {
+                    // Larger Pedestal Base
+                    ctx.fillStyle = '#334155';
+                    ctx.fillRect(chest.x - 30, chest.y - 14, 60, 32);
+                    ctx.strokeStyle = '#000';
+                    ctx.lineWidth = 3;
+                    ctx.strokeRect(chest.x - 30, chest.y - 14, 60, 32);
+
+                    // Shadow under chest
+                    ctx.fillStyle = 'rgba(0,0,0,0.5)';
+                    ctx.beginPath();
+                    ctx.ellipse(chest.x, chest.y + 16, 26, 8, 0, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    if (chest.hasItem) {
+                        // Golden aura pulse behind active item chest
+                        const pulse = Math.sin(time * 3 + chest.id) * 4;
+                        ctx.fillStyle = 'rgba(245, 158, 11, 0.25)';
+                        ctx.beginPath();
+                        ctx.arc(chest.x, chest.y - 20, 26 + pulse, 0, Math.PI * 2);
+                        ctx.fill();
+
+                        // Pixel Treasure Chest (Closed / Full - SCALED UP 1.5x)
+                        ctx.fillStyle = '#92400e'; // Dark Wood
+                        ctx.fillRect(chest.x - 24, chest.y - 38, 48, 32);
+                        ctx.fillStyle = '#b45309'; // Medium Wood
+                        ctx.fillRect(chest.x - 21, chest.y - 35, 42, 26);
+                        
+                        // Metal Gold Straps & Lock
+                        ctx.fillStyle = '#f59e0b';
+                        ctx.fillRect(chest.x - 24, chest.y - 28, 48, 6);
+                        ctx.fillRect(chest.x - 6, chest.y - 25, 12, 10);
+                        ctx.fillStyle = '#000';
+                        ctx.fillRect(chest.x - 3, chest.y - 22, 6, 5);
+                        
+                        // ==========================================
+                        // SIGNIFICANTLY LARGER & SHARPER TEXT BADGE
+                        // ==========================================
+                        const badgeWidth = 120;
+                        const badgeHeight = 32;
+                        const badgeX = chest.x - badgeWidth / 2;
+                        const badgeY = chest.y - 78;
+
+                        // Outer Glowing Border Card
+                        ctx.fillStyle = '#020617';
+                        ctx.fillRect(badgeX, badgeY, badgeWidth, badgeHeight);
+                        ctx.strokeStyle = '#f59e0b';
+                        ctx.lineWidth = 3;
+                        ctx.strokeRect(badgeX, badgeY, badgeWidth, badgeHeight);
+
+                        // High Contrast Inner Card Fill
+                        ctx.fillStyle = '#0f172a';
+                        ctx.fillRect(badgeX + 2, badgeY + 2, badgeWidth - 4, badgeHeight - 4);
+
+                        // Clear Crisp Large Text with Drop Shadow Outline
+                        ctx.font = 'bold 16px "Noto Sans Tamil", sans-serif';
+                        ctx.textAlign = 'center';
+                        ctx.textBaseline = 'middle';
+
+                        // Black text outline shadow for ultimate legibility
+                        ctx.strokeStyle = '#000000';
+                        ctx.lineWidth = 4;
+                        ctx.strokeText(chest.label, chest.x, badgeY + badgeHeight / 2);
+                        
+                        // Main Yellow Text
+                        ctx.fillStyle = '#fef08a';
+                        ctx.fillText(chest.label, chest.x, badgeY + badgeHeight / 2);
+
+                    } else {
+                        // Pixel Treasure Chest (Open / Empty)
+                        ctx.fillStyle = '#78350f';
+                        ctx.fillRect(chest.x - 24, chest.y - 24, 48, 16);
+                        ctx.fillStyle = '#020617';
+                        ctx.fillRect(chest.x - 21, chest.y - 22, 42, 12);
+
+                        // Open Lid tilted back
+                        ctx.fillStyle = '#92400e';
+                        ctx.fillRect(chest.x - 24, chest.y - 38, 48, 12);
+
+                        ctx.fillStyle = '#94a3b8';
+                        ctx.font = 'bold 12px sans-serif';
+                        ctx.textAlign = 'center';
+                        ctx.fillText('(காலியாக உள்ளது)', chest.x, chest.y - 44);
+                    }
+                });
+            }
+
+            // 5. Render Footstep Dust Particles
+            for (let i = footstepParticles.length - 1; i >= 0; i--) {
+                const fp = footstepParticles[i];
+                fp.alpha -= 0.04;
+                fp.radius *= 0.95;
+                if (fp.alpha <= 0) {
+                    footstepParticles.splice(i, 1);
+                    continue;
+                }
+                ctx.fillStyle = `rgba(148, 163, 184, ${fp.alpha})`;
+                ctx.beginPath();
+                ctx.arc(fp.x, fp.y, fp.radius, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            // 6. Draw Player Character (With Z-Height Jump Elevation)
+            const px = player.x;
+            const py = player.y - player.z; // Elevate player visually when jumping!
+
+            // Ground Shadow remains on ground (y)
+            ctx.fillStyle = 'rgba(0,0,0,0.5)';
+            const shadowScale = Math.max(0.3, 1 - (player.z / 100));
+            ctx.beginPath();
+            ctx.ellipse(player.x, player.y + 14, 15 * shadowScale, 6 * shadowScale, 0, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Bobbing & Leg Walking Animation Cycle
+            const bob = player.isMoving ? Math.sin(time * 14) * 2.5 : 0;
+            const legOffset = player.isMoving ? Math.sin(player.walkDistance * 10) * 4 : 0;
+
+            // Animated Legs
+            ctx.fillStyle = '#1e3a8a';
+            ctx.fillRect(px - 8 + legOffset, py + 4, 6, 10);
+            ctx.fillRect(px + 2 - legOffset, py + 4, 6, 10);
+
+            // Player Body & Armor
+            ctx.fillStyle = '#2563eb'; // Armor Blue
+            ctx.fillRect(px - 12, py - 20 + bob, 24, 24);
+            ctx.fillStyle = '#f59e0b'; // Gold Trim Belt
+            ctx.fillRect(px - 12, py - 4 + bob, 24, 5);
+
+            // Player Head & Knight Helmet
+            ctx.fillStyle = '#38bdf8'; // Light Blue Helmet
+            ctx.fillRect(px - 10, py - 34 + bob, 20, 14);
+            ctx.fillStyle = '#fde047'; // Visor Plume
+            ctx.fillRect(px - 4, py - 40 + bob, 8, 6);
+
+            // Eyes / Facing Direction with periodic blinking
+            player.blinkTimer += 0.02;
+            const isBlinking = Math.sin(player.blinkTimer) > 0.96;
+            if (!isBlinking) {
+                ctx.fillStyle = '#000';
+                const eyeOffset = player.facing === 'right' ? 4 : -6;
+                ctx.fillRect(px + eyeOffset, py - 28 + bob, 4, 4);
+            }
+
+            // 7. Carrying Item Overhead Graphic (With Crisp Large Text)
+            if (player.carryingItem) {
+                const itemY = py - 60 + bob;
+                
+                // Floating Sparkles around carried item
+                ctx.fillStyle = '#fde047';
+                const spX = px + Math.sin(time * 6) * 22;
+                ctx.fillRect(spX, itemY - 6, 4, 4);
+
+                ctx.fillStyle = '#b45309';
+                ctx.fillRect(px - 18, itemY, 36, 24);
+                ctx.fillStyle = '#f59e0b';
+                ctx.fillRect(px - 15, itemY + 2, 30, 20);
+
+                // Large Carried Text Badge
+                ctx.fillStyle = '#020617';
+                ctx.fillRect(px - 48, itemY - 24, 96, 24);
+                ctx.strokeStyle = '#38bdf8';
+                ctx.lineWidth = 2;
+                ctx.strokeRect(px - 48, itemY - 24, 96, 24);
+
+                ctx.fillStyle = '#ffffff';
+                ctx.font = 'bold 13px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText(player.carryingItem.label, px, itemY - 8);
+            }
+
+            // 8. Render Gold Coin Splash Particles in Treasure Vault
+            for (let i = goldCoinParticles.length - 1; i >= 0; i--) {
+                const gp = goldCoinParticles[i];
+                gp.x += gp.vx;
+                gp.y += gp.vy;
+                gp.vy += 0.4; // Gravity
+                gp.life -= 0.03;
+
+                if (gp.life <= 0 || gp.y > h - 10) {
+                    goldCoinParticles.splice(i, 1);
+                    continue;
+                }
+
+                ctx.fillStyle = gp.color;
+                ctx.beginPath();
+                ctx.arc(gp.x, gp.y, gp.radius, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.strokeStyle = '#b45309';
+                ctx.lineWidth = 1;
+                ctx.stroke();
+            }
+
+            // 9. Render Burst Sparkle Particles
+            for (let i = burstParticles.length - 1; i >= 0; i--) {
+                const bp = burstParticles[i];
+                bp.x += bp.vx;
+                bp.y += bp.vy;
+                bp.life -= 0.04;
+                bp.size *= 0.95;
+
+                if (bp.life <= 0 || bp.size < 0.5) {
+                    burstParticles.splice(i, 1);
+                    continue;
+                }
+
+                ctx.fillStyle = bp.color;
+                ctx.globalAlpha = bp.life;
+                ctx.fillRect(bp.x - bp.size/2, bp.y - bp.size/2, bp.size, bp.size);
+                ctx.globalAlpha = 1.0;
+            }
+
+            // 10. Floating Ambient Magic Particles
+            ambientParticles.forEach((p) => {
+                p.y -= p.speedY;
+                p.x += Math.sin(time + p.y * 0.05) * 0.4;
+                if (p.y < 40) {
+                    p.y = h - 20;
+                    p.x = Math.random() * w;
+                }
+
+                ctx.fillStyle = inTreasureVault ? '#fef08a' : p.color;
+                ctx.globalAlpha = p.alpha;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.globalAlpha = 1.0;
+            });
+
+            // 11. Proximity Action Prompts ("Press E / Touch / Jump")
+            if (!inTreasureVault) {
+                let showInteractPrompt = false;
+                let promptText = "";
+
+                if (!player.carryingItem) {
+                    for (let chest of itemChests) {
+                        if (chest.hasItem && Math.hypot(player.x - chest.x, player.y - chest.y) < chest.radius + 25) {
+                            showInteractPrompt = true;
+                            promptText = "எடுக்க 'E' அல்லது 📦 தொடவும்";
+                            break;
+                        }
+                    }
+                } else {
+                    if (Math.hypot(player.x - portalPedestal.x, player.y - portalPedestal.y) < portalPedestal.radius + 35) {
+                        showInteractPrompt = true;
+                        promptText = "பீடத்தில் வைக்க 'E' அமுக்கவும்!";
+                    }
+                }
+
+                if (showInteractPrompt) {
+                    ctx.fillStyle = '#f59e0b';
+                    ctx.fillRect(px - 80, py - 70 + bob, 160, 22);
+                    ctx.fillStyle = '#000';
+                    ctx.lineWidth = 2;
+                    ctx.strokeRect(px - 80, py - 70 + bob, 160, 22);
+
+                    ctx.fillStyle = '#000';
+                    ctx.font = 'bold 10px sans-serif';
+                    ctx.textAlign = 'center';
+                    ctx.fillText(promptText, px, py - 55 + bob);
+                }
+            } else {
+                // Vault Instruction Prompt above player head
+                ctx.fillStyle = '#eab308';
+                ctx.fillRect(px - 90, py - 70 + bob, 180, 22);
+                ctx.fillStyle = '#000';
+                ctx.lineWidth = 2;
+                ctx.strokeRect(px - 90, py - 70 + bob, 180, 22);
+
+                ctx.fillStyle = '#000';
+                ctx.font = 'bold 10px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText("தங்கக் காசுகளில் குதிக்கவும்! 🦘", px, py - 55 + bob);
+            }
+        }
+
+        /* ===================================================
+           8. VICTORY CONFETTI ANIMATION
+           =================================================== */
+        function startVictoryConfetti() {
+            const vCanvas = document.getElementById('victory-canvas');
+            const vCtx = vCanvas.getContext('2d');
+            vCanvas.width = vCanvas.parentElement.clientWidth;
+            vCanvas.height = vCanvas.parentElement.clientHeight;
+
+            const particles = [];
+            const colors = ['#f59e0b', '#10b981', '#3b82f6', '#ec4899', '#8b5cf6'];
+
+            for (let i = 0; i < 80; i++) {
+                particles.push({
+                    x: Math.random() * vCanvas.width,
+                    y: Math.random() * vCanvas.height - vCanvas.height,
+                    size: 4 + Math.random() * 6,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    vy: 2 + Math.random() * 4,
+                    vx: (Math.random() - 0.5) * 2
+                });
+            }
+
+            function renderConfetti() {
+                if (document.getElementById('screen-victory').classList.contains('hidden')) return;
+                vCtx.clearRect(0, 0, vCanvas.width, vCanvas.height);
+
+                particles.forEach(p => {
+                    p.y += p.vy;
+                    p.x += p.vx;
+                    if (p.y > vCanvas.height) {
+                        p.y = -10;
+                        p.x = Math.random() * vCanvas.width;
+                    }
+
+                    vCtx.fillStyle = p.color;
+                    vCtx.fillRect(p.x, p.y, p.size, p.size);
+                });
+
+                requestAnimationFrame(renderConfetti);
+            }
+
+            renderConfetti();
+        }
+    </script>
+</body>
+</html>
