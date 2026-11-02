@@ -4,6 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Student Quiz Portal | SJKT Ladang Mary</title>
 
 <style>
@@ -14,7 +15,7 @@
 }
 
 body {
-    font-family: Arial, sans-serif;
+    font-family: Arial, Helvetica, sans-serif;
     background: #f1f5f9;
     color: #172554;
     min-height: 100vh;
@@ -24,19 +25,19 @@ header {
     background: linear-gradient(135deg, #123b8a, #1769aa);
     color: white;
     text-align: center;
-    padding: 48px 20px 55px;
+    padding: 50px 20px 65px;
 }
 
 .school {
     font-size: 14px;
     letter-spacing: 2px;
-    margin-bottom: 15px;
+    margin-bottom: 16px;
     opacity: 0.9;
 }
 
 header h1 {
-    font-size: clamp(28px, 5vw, 42px);
-    margin-bottom: 12px;
+    font-size: clamp(28px, 5vw, 43px);
+    margin-bottom: 13px;
 }
 
 header p {
@@ -46,20 +47,20 @@ header p {
 
 .container {
     max-width: 1050px;
-    margin: -25px auto 0;
+    margin: -30px auto 0;
     padding: 0 20px 45px;
     position: relative;
 }
 
 .section-title {
     text-align: center;
-    margin: 35px 0 25px;
+    margin: 35px 0 28px;
 }
 
 .section-title h2 {
-    font-size: 25px;
+    font-size: 26px;
     color: #123b8a;
-    margin-bottom: 8px;
+    margin-bottom: 9px;
 }
 
 .section-title p {
@@ -70,29 +71,29 @@ header p {
 .games {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: 22px;
+    gap: 24px;
 }
 
 .card {
     background: white;
     border-radius: 18px;
     padding: 28px 24px;
-    box-shadow: 0 6px 20px rgba(15, 23, 42, 0.07);
+    box-shadow: 0 6px 20px rgba(15,23,42,0.07);
     display: flex;
     flex-direction: column;
-    min-height: 255px;
+    min-height: 270px;
     border: 1px solid #e2e8f0;
     transition: transform 0.2s, box-shadow 0.2s;
 }
 
 .card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 12px 25px rgba(15, 23, 42, 0.12);
+    box-shadow: 0 12px 25px rgba(15,23,42,0.12);
 }
 
 .emoji {
-    font-size: 43px;
-    margin-bottom: 17px;
+    font-size: 44px;
+    margin-bottom: 16px;
 }
 
 .tag {
@@ -103,7 +104,7 @@ header p {
     border-radius: 20px;
     font-size: 12px;
     font-weight: bold;
-    margin-bottom: 13px;
+    margin-bottom: 14px;
     width: fit-content;
 }
 
@@ -116,8 +117,8 @@ header p {
 .card p {
     color: #64748b;
     font-size: 14px;
-    line-height: 1.6;
-    margin-bottom: 22px;
+    line-height: 1.7;
+    margin-bottom: 23px;
     flex-grow: 1;
 }
 
@@ -127,30 +128,41 @@ header p {
     text-align: center;
     background: #1769d2;
     color: white;
-    padding: 13px;
+    padding: 14px;
     border-radius: 10px;
     font-weight: bold;
+    transition: background 0.2s;
 }
 
 .play-btn:hover {
     background: #104b9c;
 }
 
+.coming-soon {
+    background: #94a3b8;
+    cursor: not-allowed;
+}
+
 footer {
     text-align: center;
-    padding: 25px 15px;
+    padding: 28px 15px;
     color: #64748b;
     font-size: 13px;
+    line-height: 1.8;
 }
 
 @media (max-width: 600px) {
     header {
-        padding: 38px 15px 48px;
+        padding: 40px 15px 55px;
     }
 
     .container {
         padding-left: 15px;
         padding-right: 15px;
+    }
+
+    .section-title h2 {
+        font-size: 22px;
     }
 }
 </style>
@@ -173,38 +185,37 @@ footer {
 
     <div class="games">
 
-        <!-- EXISTING QUIZ -->
+        <!-- YEAR 6 EXISTING QUIZ -->
         <div class="card">
             <div class="emoji">📚</div>
-            <span class="tag">STUDENT QUIZ</span>
+            <span class="tag">YEAR 6</span>
             <h3>Previous Student Quiz</h3>
-            <p>Access the existing collection of educational quizzes and activities.</p>
-            <a class="play-btn" href="previous-quiz.html">
+            <p>Access the existing Year 6 educational quiz and activities.</p>
+            <a class="play-btn" href="./year6.html">
                 ▶ PLAY NOW
             </a>
         </div>
 
-        <!-- YEAR 4 AND 5 GAME -->
+        <!-- YEAR 4 AND 5 GEMINI GAME -->
         <div class="card">
             <div class="emoji">🧠</div>
             <span class="tag">YEAR 4 & 5</span>
             <h3>Mathematics Challenge</h3>
             <p>Explore the new interactive mathematics game. Test your knowledge and challenge yourself!</p>
-            <a class="play-btn" href="year45gemini.html">
+            <a class="play-btn" href="./year45gemini.html">
                 ▶ PLAY NOW
             </a>
         </div>
 
-        <!-- FUTURE GAME PLACEHOLDER -->
+        <!-- FUTURE GAMES -->
         <div class="card">
             <div class="emoji">🚀</div>
             <span class="tag">COMING SOON</span>
             <h3>More Games Coming Soon!</h3>
             <p>Stay tuned for more exciting learning games and challenges.</p>
-            <a class="play-btn" href="#" onclick="return false;"
-               style="background:#94a3b8; cursor:not-allowed;">
+            <span class="play-btn coming-soon">
                 COMING SOON
-            </a>
+            </span>
         </div>
 
     </div>
